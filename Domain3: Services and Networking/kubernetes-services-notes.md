@@ -489,7 +489,56 @@ kubectl delete pod backend-pod-2
 
 ---
 
-## 10. Summary
+## 10. Exercises to Practice for the CKAD Exam
+
+### Imperative (CLI-based) Exercises
+
+**Exercise 1 — Inspect Pod IPs**
+1. Create two pods: `frontend` (image: `nginx`) and `backend` (image: `nginx`).
+2. List both pods along with their assigned private IPs.
+3. From inside the `frontend` pod, `curl` the `backend` pod's IP and confirm you get the nginx welcome page.
+
+**Exercise 2 — Generate a Service YAML from CLI**
+1. Generate the YAML for a ClusterIP service named `web-svc` on port 80 targeting port 8080, **without creating it**.
+2. Save it to a file called `web-svc.yaml`.
+
+**Exercise 3 — Expose a Pod Quickly**
+1. Create a pod called `web` using the `nginx` image.
+2. Use `kubectl expose` to create a service named `web-svc` on port 80.
+3. List all endpoints — confirm the backend pod IP appears.
+
+**Exercise 4 — Inspect Endpoints**
+1. Run `kubectl get endpoints` and identify the endpoints for any one service.
+2. Use `kubectl describe service <name>` and find the `Endpoints` field.
+
+---
+
+### Declarative (YAML-based) Exercises
+
+**Exercise 5 — Service Without Selector + Manual Endpoints**
+1. Write a Pod manifest for `backend-pod` running `nginx`.
+2. Write a Service manifest called `simple-service` with `port: 80` and `targetPort: 80` — **no selector**.
+3. Write an Endpoints manifest with the exact name `simple-service` that points to the `backend-pod`'s IP on port 80.
+4. Apply all three manifests in order and verify connectivity from another pod using `curl <service-ClusterIP>`.
+
+**Exercise 6 — Service With Selector (Automatic Endpoints)**
+1. Write a Pod manifest for `backend-pod` with the label `app: backend`.
+2. Write a Service manifest called `simple-service` with selector `app: backend`, `port: 80`, `targetPort: 80`.
+3. Apply both and verify the Endpoints object got populated automatically.
+
+**Exercise 7 — Test `port` vs `targetPort`**
+1. Modify the Service from Exercise 6 so that `port: 8080` but `targetPort: 80`.
+2. From another pod, `curl <service-ClusterIP>:8080` and confirm you reach the nginx page on the backend's port 80.
+
+**Exercise 8 — Label-Driven Endpoint Changes**
+1. Create two pods (`pod-1`, `pod-2`) running `nginx` with the label `app: backend`.
+2. Apply the Service from Exercise 6.
+3. Remove the label from `pod-1` using `kubectl label pod pod-1 app-` and verify it disappears from the Endpoints.
+4. Add the label back and confirm it reappears.
+
+---
+
+## 11. Summary
 
 ### The Full Picture
 

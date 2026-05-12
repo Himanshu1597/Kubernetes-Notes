@@ -317,7 +317,55 @@ kubectl delete -f service.yaml
 
 ---
 
-## 9. Summary
+## 9. Exercises to Practice for the CKAD Exam
+
+### Imperative (CLI-based) Exercises
+
+**Exercise 1 — Create a NodePort Service via CLI**
+1. Create a NodePort service named `test-np` exposing port `80` → target `80`.
+2. Use `kubectl get svc` and confirm the `PORT(S)` column shows a random port in the `30000–32767` range.
+
+**Exercise 2 — Expose a Running Pod as NodePort**
+1. Create a pod called `web-pod` using the `nginx` image.
+2. Use `kubectl expose pod` with `--type=NodePort --port=80` to make a service called `web-np`.
+3. Confirm the service is reachable on `<node-ip>:<nodeport>`.
+
+**Exercise 3 — Generate the YAML Without Creating It**
+1. Use a dry-run command to generate a NodePort service YAML for `web-np` (port `80`, target `80`).
+2. Save it to a file but do not create the service.
+
+**Exercise 4 — Find the Node's External IP**
+1. List all nodes along with their IPs.
+2. Identify which column is the EXTERNAL-IP and which is the INTERNAL-IP.
+3. From outside the cluster, `curl` `<EXTERNAL-IP>:<NodePort>` of any service.
+
+---
+
+### Declarative (YAML-based) Exercises
+
+**Exercise 5 — Basic NodePort Service**
+1. Write a Pod manifest for `backend-pod` running `nginx` with label `app: backend`.
+2. Write a NodePort service manifest with selector `app: backend`, `port: 80`, `targetPort: 80`.
+3. Apply both and verify external access via `<node-ip>:<assigned-nodeport>`.
+
+**Exercise 6 — Fixed NodePort Number**
+1. Modify the manifest from Exercise 5 to set a **fixed** `nodePort: 30556`.
+2. Delete and recreate the service; confirm it always uses `30556`.
+3. Attempt to set `nodePort: 25000` — observe the validation error and explain why.
+
+**Exercise 7 — Both Internal and External Access**
+1. Reuse the Service from Exercise 5.
+2. From outside the cluster: `curl <node-ip>:<nodePort>` — confirm it works.
+3. From inside a pod in the cluster: `curl <service-clusterIP>:80` — confirm internal access also works.
+
+**Exercise 8 — Service Connectivity Without Matching Pod**
+1. Create a NodePort service that selects `app=frontend`, but do **not** create any matching pod.
+2. Try `curl <node-ip>:<nodeport>` — observe the result.
+3. Then create a matching pod and confirm requests start succeeding immediately.
+
+---
+
+## 10. Summary
 
 | Concept | Detail |
 |---|---|

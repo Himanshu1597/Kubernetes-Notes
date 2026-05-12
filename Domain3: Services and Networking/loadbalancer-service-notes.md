@@ -264,7 +264,60 @@ kubectl delete -f lb-service.yaml
 
 ---
 
-## 9. Summary
+## 9. Exercises to Practice for the CKAD Exam
+
+> **Note:** Most of these exercises require a managed Kubernetes cluster (EKS, GKE, AKS, DigitalOcean). On minikube or kind, the EXTERNAL-IP will stay `<pending>` — you can still verify the YAML is correct.
+
+### Imperative (CLI-based) Exercises
+
+**Exercise 1 — Create a LoadBalancer Service via CLI**
+1. Create a LoadBalancer service named `lb-test` exposing port `80` to target `80`.
+2. Run `kubectl get svc` and observe the EXTERNAL-IP field. If it shows `<pending>`, wait until the cloud provider provisions the LB.
+
+**Exercise 2 — Expose a Pod as LoadBalancer**
+1. Create a pod called `web-pod` using the `nginx` image.
+2. Expose it as a LoadBalancer service called `web-lb` on port `80`.
+3. Once the EXTERNAL-IP is assigned, `curl <EXTERNAL-IP>` and confirm you see the nginx welcome page **without any port number**.
+
+**Exercise 3 — Generate the YAML via Dry Run**
+1. Use a dry-run command to generate a LoadBalancer service YAML for `web-lb` (port `80`, target `80`).
+2. Save the output to a file without creating the service.
+
+**Exercise 4 — Inspect the Auto-Created NodePort**
+1. After creating any LoadBalancer service, run `kubectl describe service <name>`.
+2. Find the `NodePort` field and the `LoadBalancer Ingress` field.
+3. Explain what each of them is used for.
+
+---
+
+### Declarative (YAML-based) Exercises
+
+**Exercise 5 — LoadBalancer with Selector**
+1. Write a Pod manifest for `backend-pod` running `nginx` with label `app: backend`.
+2. Write a Service manifest of `type: LoadBalancer` with selector `app: backend`, `port: 80`, `targetPort: 80`.
+3. Apply both, wait for the EXTERNAL-IP to be assigned, and `curl` it from outside.
+
+**Exercise 6 — Confirm the Superset Behaviour**
+1. Reuse the Service from Exercise 5.
+2. Identify three different ways to reach the backend pod:
+   - From outside the cluster: `<EXTERNAL-IP>`
+   - From a worker node: `<node-ip>:<nodePort>`
+   - From inside another pod: `<clusterIP>:80`
+3. Confirm all three work.
+
+**Exercise 7 — Verify Pending State on Local Cluster**
+1. On a local cluster (minikube/kind), apply a LoadBalancer service manifest.
+2. Observe the EXTERNAL-IP staying as `<pending>` indefinitely.
+3. Explain *why* — and which environments would automatically provision a real LB.
+
+**Exercise 8 — Cleanup and Cost Awareness**
+1. Delete the LoadBalancer service from Exercise 5 using `kubectl delete -f`.
+2. Confirm in your cloud provider's dashboard that the LB resource is also removed.
+3. Explain why leaving an unused LoadBalancer service in dev/test environments is costly.
+
+---
+
+## 10. Summary
 
 | Concept | Detail |
 |---|---|

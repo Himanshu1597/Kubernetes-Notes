@@ -264,7 +264,55 @@ This prints the manifest to your terminal without actually creating the service 
 
 ---
 
-## 7. Summary
+## 7. Exercises to Practice for the CKAD Exam
+
+### Imperative (CLI-based) Exercises
+
+**Exercise 1 — Create a ClusterIP Service from CLI**
+1. Create a ClusterIP service called `test-service` exposing port `80` to target port `80`.
+2. Verify the type, ClusterIP, and EXTERNAL-IP fields using `kubectl get service`.
+
+**Exercise 2 — Generate a ClusterIP Manifest with Dry Run**
+1. Use a dry-run command to generate the YAML for a ClusterIP service named `web-svc` (port 80, target 8080).
+2. Save the output to a file `web-svc.yaml` without creating the service.
+
+**Exercise 3 — Expose an Existing Pod**
+1. Create a pod called `web-pod` using the `nginx` image.
+2. Use `kubectl expose` to create a ClusterIP service called `web-svc` on port `80`.
+3. From a temporary `busybox` pod, run `wget -O- web-svc` and confirm the nginx page comes back.
+
+**Exercise 4 — Inspect a ClusterIP Service**
+1. List the services in the default namespace.
+2. Find a service whose EXTERNAL-IP is `<none>` and confirm it is a ClusterIP type.
+3. Use `kubectl describe service <name>` and find the endpoints.
+
+---
+
+### Declarative (YAML-based) Exercises
+
+**Exercise 5 — ClusterIP by Default (No Type Field)**
+1. Write a Service manifest named `simple-service` with only `port: 80` and `targetPort: 80` — **do not specify the `type` field**.
+2. Apply it and confirm the TYPE column shows `ClusterIP`.
+3. Confirm EXTERNAL-IP is `<none>`.
+
+**Exercise 6 — Explicit ClusterIP Service with Selector**
+1. Write a Pod manifest for `backend-pod` running `nginx` with label `app: backend`.
+2. Write a Service manifest of `type: ClusterIP` with selector `app: backend`, `port: 80`, `targetPort: 80`.
+3. Apply both manifests and verify the Endpoints object is auto-populated.
+
+**Exercise 7 — Internal-Only Access**
+1. Using the Service from Exercise 6, launch a temporary pod (`kubectl run tmp --rm -it --image=busybox -- sh`).
+2. From inside, run `wget -O- <service-clusterip>:80` and confirm it works.
+3. Confirm that the ClusterIP is **not reachable** from your host machine outside the cluster.
+
+**Exercise 8 — DNS-Based Access**
+1. Reuse the Service from Exercise 6.
+2. From a temporary pod, run `wget -O- simple-service` — using **the service name only**, not the IP.
+3. Confirm the request is resolved by Kubernetes DNS and reaches the backend pod.
+
+---
+
+## 8. Summary
 
 | Concept | Detail |
 |---|---|
