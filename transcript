@@ -1,0 +1,453 @@
+# Kubernetes Requests and Limits
+
+## Introduction
+
+Hi everyone, and welcome back.
+
+Now in today's video we are going to discuss about request and limits in Kubernetes.
+
+Now again this is an important topic specifically when it comes to the production environment.
+
+So let's go ahead and understand it.
+
+## The Problem: Why We Need Requests and Limits
+
+So first we are going to explore few challenges post which we will be discussing on how this specific feature allows us to overcome them.
+
+### Challenge 1: Resource Starvation
+
+Now the first challenge here states that a specific pod that is scheduled in a worker node can consume more resources than expected, which will affect all of the other pods that are part of the same node.
+
+So let's assume that you have a pod, you have app B bot, and suddenly you also have a app C pod. But this pod is consuming a lot of Ram. It is consuming a lot of CPU as part of the worker node.
+
+Now what the issue will happen is that since this worker node has a finite amount of memory and finite amount of CPU, if app C pod is consuming most of the Ram and CPU, then app A and app B pod will not really get enough resources and this will in turn affect the overall production environment.
+
+So ideally this is something that you do not really want. And this is also one of the common things that you will see in production environments if the requests and limits are not really set.
+
+### Challenge 2: Scheduling Based on Resource Requirements
+
+Now the second part here states that a pod requires certain amount of memory and computing resource to run properly. And this is expected.
+
+So let's assume that app C pod requires 512 MB of Ram and two core CPU to run optimally.
+
+Now, how will you tell Kubernetes that app C pod requires this much amount of Ram and this much amount of CPU? And based on this requirement, Kubernetes should schedule the pod accordingly.
+
+Now, in a very simplistic terms, what you can do is you can go ahead and maybe assign a simple label to the nodes and use the node selector to go ahead and create the pod in the largest node. But this is something that does not really work well specifically when you have thousands of worker nodes.
+
+So you need to be able to clearly state the memory as well as the CPU related requirement to Kubernetes. And Kubernetes can go ahead and look into all of the hundreds or thousands of worker nodes and then schedule the pod accordingly.
+
+## What Are Requests and Limits?
+
+So in order to overcome these two specific challenges that we were discussing, requests and limits proves to be very useful.
+
+So at a high level overview, using the requests and limits, you can control the amount of resource that can be assigned to the pod, and also the appropriate node in which a pod can be launched.
+
+### Request vs Limit Explained
+
+For example, you have a request and you have a limit. Request is more of a guaranteed scenario.
+
+Let's say that your pod really requires 256 MB of Ram to run. If it does not really get this much amount of memory, it will not really work properly. So this is part of a guaranteed memory. So this is what the request is.
+
+Limit is what is the maximum number of memory that a pod can consume. I know that my pod requires Request 256 MB. But what happens if it suddenly starts to use a lot of memory in a node? So in order to control the maximum memory that a pod can use, you make use of limit.
+
+### Summary Table
+
+So just for simplicity, I have also added a table here.
+
+So when we discuss about the request, it denotes the minimum amount of CPU or memory a container is guaranteed to get. And based on the amount of CPU and memory that you add as part of the request, the Kubernetes will assign the appropriate node that has enough resources to match the request related constraints.
+
+In a similar way, when we discuss about limits. Limit determines the maximum amount of CPU or memory that container is allowed to use. In case if it uses more, then it can be throttled or the container can be killed.
+
+## Defining Requests and Limits in a YAML Manifest
+
+So let's also go ahead and understand on how you can define request and limit as part of the overall manifest file.
+
+So here we have a simple pod manifest file over here and in the containers here associated with a specific container. In this case you have CP labs container. You have to add a field of resources. And within here you can specify requests and limits.
+
+Now if you see in request also you add memory and CPU in limits. Also you add memory and CPU.
+
+So based on this specific manifest file what exactly does it mean. Let's explore.
+
+### Memory Configuration
+
+Now the first area that we are going to explore is related to the memory part in Request and Limits.
+
+So here you have defined 1 to 8 mebibytes. So what will happen is when you create the pod, Kubernetes will ensure that whatever worker node this pod is assigned to has this much amount of minimum memory that is available.
+
+And you also have limits and memory. Here is 500. And what exactly this means that this specific pod can use a maximum of this amount of memory. If it tries to Tries to use more, it can be terminated or throttled.
+
+Alright. So I hope this part is understood.
+
+### CPU Configuration
+
+Now let's go ahead and discuss about the CPU.
+
+You have 0.5 and you have one. So 0.5 refers to half a CPU core or 50% of a single CPU core. So again the main concept will remain to be the same as that of memory, where this much amount must be made available for this part to run. And similarly, when you discuss about limit here, one basically means that container can use up to one full CPU core.
+
+Alright. So the overall approach is quite simple. Let's go ahead and try it out.
+
+## Practical Demo
+
+### Initial Setup
+
+Now for today's video I have a simple file called as request hyphen limit YAML. And what it does is it creates a simple pod.
+
+Now before we go ahead and implement the request and limit, I wanted to show you a few things.
+
+Now from the CLI, let's go ahead and quickly create a pod through this manifest file.
+
+Once it is done, the next thing that you can check is the nodes. So when you do a cube CTL get nodes, you can go ahead and copy the node name over here.
+
+Great.
+
+### Checking Existing Pod Resource Usage
+
+Now within here you see this is the important part that I wanted to show you. You have a CPU request CPU limit, memory request, memory limit.
+
+Now, I hope from a theoretical point of view, you understood what exactly this means.
+
+Now there are many pods that you see over here. So you have core DNS and other pods. These are the pods that are required as part of Kubernetes. Will ignore that.
+
+As of now we are going to discuss about Pod that we have created, which is CPU pod.
+
+Now for this pod in the CPU request it is zero. In the CPU limit it is zero. Memory request is zero. Memory limit is zero.
+
+So what this means is there is no request and limits that are applied to this pod. So tomorrow, if this spot suddenly starts to take huge amount of CPU and memory, then all other parts that are scheduled in the same worker node will be affected.
+
+Alright, so generally in production environment it is recommended that you use the appropriate requests and limit. However, before you do that, you should know how much amount of memory and how much amount of CPU your pod really requires based on the production environment.
+
+Alright.
+
+### Mixed Resource Configurations
+
+Now along with that, there are also certain ports that are available where request part is present, but limit is not really available.
+
+So here you have a request. So this much amount of CPU must be present in the worker node. And this much amount of memory must be present in the worker node for the pod to be scheduled. However, for some you have limits that are not enforced.
+
+For some, you see you have certain limits that are enforced on the set of pods for overall safety. For other pods here.
+
+### Official Kubernetes Documentation
+
+Now generally in Google, when you type requests and limit Kubernetes, you will come across the across the documentation of resource management for pod and containers. It can happen. You might come across different page also. But anyways, I'll be adding the link to this in our GitHub page for you to reference.
+
+Now within here, if you go a bit down in the requests and limits over here, you have a specific manifest file that will be made available to you.
+
+And the manifest file looks very simple in the container over here.
+
+Now again this is a multi container based pod. This is the container number one over here. And this is the container number two. And for each container you have the CPU and memory related requests and limits that are applied.
+
+### Applying Requests and Limits to Our Pod
+
+So let's go ahead and try it out.
+
+So within here since we are applying the requests and limit for this specific container, you can go ahead and specify in the resources you can specify request. And within here you can specify memory and you can specify CPU.
+
+All right.
+
+Alright, this is one part.
+
+Now in a similar way, make sure that the requests and limits are aligned. You have limits inside limits. Also you have memory and you have CPU.
+
+This is the base.
+
+Now how much amount of CPU, how much amount of memory is something that you can define. So you will also see some examples over here for reference.
+
+So for request let's say I add a memory of 128 mi and CPU I'll say 0.5. Now memory I'll say 500 mi and CPU I'll say one. So this is the maximum amount of consumption that this spot can use.
+
+Once you have defined this, you can save it.
+
+### Testing the Configuration
+
+Now let's also go ahead and delete the nginx pod that we have created.
+
+Oops.
+
+Let's quickly verify the pod is running.
+
+It is.
+
+The name is different I'll say kubectl delete pod. I'll add this name.
+
+All right.
+
+Once this is done, we'll go ahead and recreate the pod from the manifest file.
+
+And you can check using kubectl get pods.
+
+At this stage you see the status is pending.
+
+Now why the status is pending you can say cube CTL describe pod. And here it clearly says zero out of one nodes are available insufficient CPU.
+
+Now since the issue is related to CPU I'll try and change it to 0.1.
+
+Let's go ahead and delete the pod again.
+
+And now we'll recreate the pod.
+
+Now when you do a kubectl get pods this time you see the pod is running perfectly well.
+
+### Verifying Resource Allocation
+
+Along with that, let's also do a kubectl describe node.
+
+So this is the pod that was just created.
+
+And in the CPU request you have this specific one which is 100m. In this case, since we have defined 0.1, it means the same. The CPU limit is one. It has taken from here the memory request is 128 and the memory limit is 500.
+
+All right.
+
+So I hope with this you understood the basic about this specific topic.
+
+## Advantages of Using Requests and Limits
+
+I have also added a specific slide related to advantages of using requests and limits.
+
+For example, it allows you to prevent any resource starvation so that no single container can consume all of the resources in a worker node that will in turn affect the other resources as well.
+
+It also ensures fair resource allocation. It can prevent overprovisioning, and it can also improve the overall stability and performance of your application, since the requirement for ports are clearly defined.
+
+## Cleanup
+
+So once you have completed the practical, make sure to go ahead and delete the port.
+
+Let's do that.
+
+Great.
+
+So that's a high level overview.
+
+And with this we'll conclude today's video.
+
+---
+
+# KodeKloud Transcript: Resource Requirements
+
+## Introduction to Resource Requirements
+
+Let's look at resource requirements.
+
+## How the Scheduler Uses Resources
+
+Let us start by looking at a three node Kubernetes cluster.
+
+Each node has a set of CPU and memory resources available.
+
+Now every pod requires a set of resources to run. In this case, for example, this pod requires two CPUs and one memory unit.
+
+Now, whenever a pod is placed on a node, it consumes the resources available on that node.
+
+Now, as we have discussed before, it is the Kubernetes Scheduler that decides which node a pod goes to.
+
+The scheduler takes into consideration the amount of resources required by a pod and those available on the nodes, and identifies the best node to place a pod on.
+
+In this case, the scheduler schedules a new pod on node two because there are sufficient resources available on that node.
+
+If nodes have no sufficient resources available. The scheduler avoids placing the pod on those nodes, and instead places the pod on one where sufficient resources are available, and if there is no sufficient resources available on any of the nodes, then the scheduler holds back, scheduling the pod and you will see the pod in a pending state.
+
+And if you look at the events using the cube control describe pod command, you will see there is an insufficient CPU.
+
+## Defining Resource Requests
+
+Now let us now focus on the resource requirements for each pod.
+
+So what are these blocks and what are their values.
+
+Now you can specify the amount of CPU and memory required for Pod when creating one. For example, it could be one CPU and one GB of memory and this is known as the resource request for a container.
+
+So the minimum amount of CPU or memory requested by the container.
+
+So when the scheduler tries to place the pod on a node, it uses these numbers to identify a node which has sufficient amount of resources available.
+
+So to do this in the the sample pod definition file, all you need to do is add a section called resources under which add requests and specify the new values for memory and CPU usage.
+
+In this case, I set it to four gigabyte of memory and two counts of CPU.
+
+So when the scheduler gets a request to place this pod, it looks for a node that has this amount of resources available. And when the pod gets placed on a node, the pod gets a guaranteed amount of resources available for it.
+
+## CPU Units Explained
+
+So what does one count of CPU really mean?
+
+Now you can specify any value as low as 0.1. So 0.1 CPU can also be expressed as 100 M, where M stands for milli, and you can go as low as one M, but not lower than that.
+
+Uh, now one count of CPU is equivalent to one Vcpu so that's one vcpu in AWS. So if you're looking at the AWS cloud, or it could be referred to as one core in GCP or Azure or one Hyperthread, um, on other other systems, and you could request a higher number of CPUs for the container provided your nodes are sufficiently funded.
+
+In this example, I have set it to five.
+
+## Memory Units Explained
+
+Now, similarly with memory, you could specify 256 mebibyte using the mi suffix, or specify the same value in memory like this. That's the um, the full number, the whole number, and or specify the same value in memory like this as m.
+
+So um or use the suffix g for uh gigabyte.
+
+So note the difference between g and g.
+
+So g is gigabyte and it refers to 1000MB, whereas g refers to GB byte. And that that would be equivalent to 1024MB.
+
+So the same applies to megabyte and maybe byte in kilobyte and kibibyte.
+
+## Resource Limits
+
+Now let's look at a container running on a node, and by default, a container has no limit to the resources it can consume on a node.
+
+So say a container that's part of a pod starts with one CPU on a node. It can go up and consume as much resources as it requires. And and that suffocates the native processes on the node or other containers of resources.
+
+Um, however, you can set a limit for the resource usage on these pods. For example, if you set a limit of one vcpu to um, the containers, a container will be limited to consume only one vcpu uh, from that node.
+
+So the same goes with memory. For example, you can set a limit of 512 megabyte on containers. Um, like this.
+
+Now you can specify the limits under the limits section. Under the resources section in your Pod definition file.
+
+So here specify the new limits for memory and CPU. Like this.
+
+Now when the pod is created, Kubernetes sets new limits for the container.
+
+And remember that the limits and requests are set for each container within a pod. So if there are multiple containers, then each container can have a request or limit set for its own.
+
+## What Happens When Limits Are Exceeded
+
+So what happens when a pod tries to exceed resources beyond its specified limit?
+
+In case of the CPU, the system throttles the CPU so that it does not go beyond the specified limit. A container cannot use more CPU resources than its limit.
+
+However, this is not the case with memory. A container can use more memory resources than its limit, so if a pod tries to consume more memory than its limit constantly. The pod will be terminated and you will see that the pod terminated with an error in the logs or in the output of the describe command. When you run it.
+
+So that's what is Om refers to out of memory kill.
+
+## Default Configuration
+
+So now that we have learned what resource requests are and what limits are and how they function, and what happens when a particular container or pod hits the limits of that were defined, let's see what the default configuration is, right?
+
+So by default Kubernetes does not have a CPU or memory request or limit set. So this means that any pod can consume as much resources as required on any node, and suffocate other pods or processes that are running on the node of resources.
+
+So this is very, very important to note.
+
+## CPU Resource Scenarios
+
+So let's just look at how CPU requests and limits work.
+
+### Scenario 1: No Request, No Limit
+
+Let's say there are two pods competing for CPU resources on the cluster. And when I say pod, I mean a container within a pod. Right. So just keep that in mind.
+
+So without a resource or a limit set, one pod can consume all the CPU resources on the node and prevent the second part of required resources. So of course this is not ideal.
+
+### Scenario 2: No Request, But Limit Set
+
+Now let's look at another case where we have no request specified. But we do have limits specified.
+
+In this case, Kubernetes automatically sets requests to the same as limits. For example, requests and limits are assumed to be three in this case, and each pod is guaranteed three vCPUs and no more than that, as limits are also set to the same.
+
+### Scenario 3: Both Request and Limit Set
+
+The next one is where requests and limits are set.
+
+In this case, each pod gets a guaranteed number of CPU requests, which is one vcpu and can go up to the limits that is defined, which is three vcpu, but not more.
+
+So this might look to be the most ideal scenario. However, the issue is that if Pod one needs more CPU cycles for some reason and pod two isn't really consuming that many CPU cycles, then we don't want to limit pod one of CPU, right? So we'd like to allow pod one to use the available CPU cycles, as long as pod two doesn't really need it.
+
+So if there are sufficient CPU cycles available on the system, then why not let the pods use them? Right? So we don't want to unnecessarily limit resources of CPU cycles.
+
+### Scenario 4: Request Set, But No Limit
+
+So, uh, that's uh, that is not really the ideal scenario. And that's where the last, um, scenario comes in.
+
+So setting requests but no limits in this case because requests are set each pod is guaranteed one vcpu. However, because limits are not set when available, any pod can consume as many CPU cycles as available. But at any point in time, If pod two is, uh, requires additional, uh, CPU cycles or whatever it is. It has requested, then it will be guaranteed its requested CPU cycle.
+
+So this is the most ideal setup.
+
+Of course, there are cases where you absolutely may want to limit a pod of resources, and in that case you may set limits. For example, a good use case for setting limits is our labs themselves, where, um, all the labs that you've been, you guys have been going through and accessing, um, as part of this course, they are hosted as containers, um, on a cluster. Right.
+
+And since it's made accessible to public and um, users, uh, can run any kind of workload that they want, we set limits to prevent the user from misusing the infrastructure to, let's say, perform Bitcoin mining or, um, other resource consuming activities. So that works for us in that case.
+
+But in your case, if you don't want to restrict your application to consume additional CPU, uh, if needed, then you could consider not setting limits.
+
+But remember, if you were to do that, you need to make sure that all the pods have some request set, because that's the only way a pod will have resources guaranteed when there are no limits set for other pods.
+
+Right.
+
+So if there is any pod that has no request set and and there are no limits set for all the all the other pods, then it's possible that any pod could consume all the memory, all the CPU that's available on the node, and starve the pod that has no request defined.
+
+So just make sure that you have set requests for all the nodes.
+
+## Memory Resource Scenarios
+
+So a couple of things to note. The requests and limits may be different for each pod, but for the sake of simplicity we are assuming that it's the same for both pods in these examples that I'm sharing here. Right? But you can have absolutely different requests or limit set for containers for each containers within each pods.
+
+So also note that these recommendations are just for CPU.
+
+So let's look at how it works for memory next.
+
+So it's kind of similar.
+
+So if you look at the memory let's say there are two.
+
+### Scenario 1: No Request, No Limit
+
+In the first case there are two pods competing for memory resources on the cluster. And without a resource or limit set, one pod can consume all the memory resources on the node and prevent the second pod of required resources. So this is not ideal.
+
+### Scenario 2: No Request, But Limit Set
+
+Now let's look at the case where we have no requests specified. But we do have limits specified. And in this case Kubernetes automatically sets requests to the same as limits.
+
+So for example requests and limits are assumed to be three gigabytes in this case. And each pod is guaranteed three gigabytes and no more as limits is also the same.
+
+### Scenario 3: Both Request and Limit Set
+
+The next one is where requests and limits are set.
+
+In this case, each pod gets a guaranteed amount of memory, which is one gigabyte and can go up to the limits defined, which is three gigabytes but not more.
+
+### Scenario 4: Request Set, But No Limit
+
+And the last one is setting requests, but no limits.
+
+In this case, because requests are set, each pod is guaranteed one gigabyte. However, because limits are not set when available, any pod can consume as much memory as available, and if pod two requests more memory to free up pod one, the only option available is to kill it now, because unlike CPU, we cannot throttle memory once memory is assigned to a pod.
+
+The only way to kind of retrieve it is to kill the pod and free up all the memory that are used by it.
+
+Okay.
+
+## Limit Ranges: Default Resource Configuration
+
+So now, as we discussed before, by default, Kubernetes does not have resource requests or limits configured for pods. But then how do we ensure that every pod created has some defaults? Um, set.
+
+Now this is possible with limit ranges.
+
+So limit ranges can help you define default values to be set for containers in pods that are created without a request or limit specified in the Pod definition files.
+
+This is applicable at the namespace level. So remember that and this is an object.
+
+So you create a definition file with the API version set to v1 kind set to limit range. And we'll give it a name CPU resource constraint.
+
+We then set the default limit to 500 M. Default request to the same as well. Um.
+
+We will also specify a max CPU as one and a minimum as 100 M, so the max refers to the maximum limit that can be set on a container in a pod, and minimum refers to the minimum request a container in a pod can make.
+
+So these are of course some example values, not a recommendation or anything. So you must set whatever is best for your applications.
+
+Um so the same goes for memory. Uh, use memory instead of CPU and specify the defaults and max and min values in this in this form.
+
+And note that these limits are enforced when a pod is created. So if you create or change a limit range it does not affect existing pods. It will only affect newer pods that are created after the limit range is created or updated.
+
+## Resource Quotas: Namespace-Level Limits
+
+And finally, is there any way to restrict the total amount of resources that can be consumed by applications deployed in a Kubernetes cluster.
+
+For example, if we had to say that all the pods together shouldn't consume more than this much of CPU or memory.
+
+What we could do is create quotas at a namespace level.
+
+So a resource quota is a namespace level object that can be created to set hard limits for requests and limits.
+
+In this example, this resource limits the total requested CPU and the current namespace to four and memory to four GB, and it defines a maximum limit of CPU consumed by all the parts together to be ten, and memory to be up ten gigabyte as well.
+
+Right.
+
+So that's um, that's another option, uh, that can be explored.
+
+## Conclusion
+
+Well, uh, that's all for now.
+
+Uh, refer to these pages on the Kubernetes documentation site for more information, and head over to the labs, and I'll see you in the next one.

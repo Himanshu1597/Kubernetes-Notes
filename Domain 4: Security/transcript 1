@@ -1,0 +1,556 @@
+# Labels and Selectors in Kubernetes
+
+Hey, everyone.
+
+And welcome back.
+
+Now, in today's video, we will be discussing about labels and selectors.
+
+---
+
+# Introduction to Labels
+
+Now, labels are basically a key value pair that you attach to a Kubernetes objects such as pods.
+
+So let's understand this with a simple example where you have two distinct set of environments here.
+
+The first environment consists of a server, a database and a load balancer.
+
+And in a similar way, a second set of environment consists of a load balancer, a server and a database.
+
+Now if someone tells you that, Hey, can you go ahead and stop all the resources associated with a dev environment.
+
+Now if you look from here, it is very difficult to see which server or which database belongs to a dev environment.
+
+The reason why it is difficult to know is because there are no appropriate labels which are associated with all of these resources.
+
+---
+
+# Example of Labels
+
+Now, in a second example here, what we have done is we have added label to each and every resource here.
+
+So the first server has a label where the key here is name and the value is CP Labs Gateway, and it also has a second label where the environment is production.
+
+Now in a similar way, the second resource has a label where name is Cablelabs hyphen DB and the environment is production.
+
+Similarly, if you look into the second environment here, the name is CP Hyphen DB and the environment is Dev.
+
+Now from this label which is associated with a individual resource, you will be able to quickly find out that hey, the lower three resources which are created, they belong to the dev environment and now I can go ahead and stop all of these resources right away.
+
+Now in order for you to know about this, having a label associated with this resource is very important.
+
+---
+
+# Real World Perspective
+
+So let me quickly give you an example in terms of perspective so it becomes easier for us to understand.
+
+So I'm in my console here, and here you will see that there are three servers which are currently running.
+
+Now let's say that someone tells you go ahead and stop a dev server.
+
+Now from here it is very difficult for you to know which among these three servers is a dev server.
+
+The reason why it is difficult for us to know is because there are no appropriate labels which are associated with these three servers.
+
+And this is the reason why attaching a label is very important.
+
+Now here, do remember that depending upon the technology that you use, the name label will change.
+
+So AWS might call it as tag.
+
+Now in the Kubernetes environment, you will call it as label and so on.
+
+So although the naming convention is different, but the overall concepts remains the same.
+
+So if you have worked with AWS, labels are very similar to tags so that it becomes easier for you to grasp.
+
+---
+
+# Adding Labels
+
+So let's do one thing.
+
+Let's go ahead and add a tag.
+
+What I'll do, I'll add two tags.
+
+Now if you would look into this diagram, there were two labels which were attached.
+
+One was associated with the name and second was associated with the environment.
+
+So let's go ahead and do that.
+
+So here I'll call name as CP Labs hyphen production and we'll add one more tag or one more label called as Env.
+
+And the env here is production.
+
+I'll go ahead and save this.
+
+Now in a similar way for the second server, let's go ahead and add one more tag, I'll call it as name and let's call it as payment gateway.
+
+And for this I'll add a tag.
+
+The tag is dev.
+
+All right, Now if you go ahead and refresh it, the first server again, you are not able to identify from here, but if you look into the tags here, you will see that there is a tag which is associated with the server where the name is CP Labs hyphen production and the Env is production.
+
+So if you click on any of the server, it is very easy for you to see that this server belongs to dev environment or the first server belongs to a production environment.
+
+So this is what labels are now.
+
+Definitely you can make it much more easier so that within a year it can appear.
+
+So let me give you one more example.
+
+So if I add a tag with a capital name and let's call it as App Gateway, and if I click on Save, you see it appears within the console itself.
+
+So if you do it this way, this way also it works well because ultimately the thing that you see over here is nothing but the value associated with the key.
+
+So if you look into the first slide, labels are nothing but a key value pairs.
+
+So within here also you have a key value pair where the key is name and the value is app gateway.
+
+And similar to that, within the second slide you'll see you have key value pair.
+
+So the key is name, the value is key labs hyphen, gateway and so on.
+
+So this is what labels are.
+
+---
+
+# Introduction to Selectors
+
+Now the next important part is selectors.
+
+Now selectors basically allows us to filter objects based on labels.
+
+So generally in Kubernetes, whenever you are using labels, you will be using selectors as well in a lot of occurrences.
+
+---
+
+# Selector Examples
+
+So let's take an example.
+
+So the first example is show me all the objects which has label where inv is equal to prod.
+
+So now what will happen is you will see all the resources here which has the environment as production.
+
+So this is one simple use case.
+
+Now the second use case here is show me all the objects where environment is equal to dev.
+
+So now it will show you all the resources where the environment is dev.
+
+So this is the importance of selectors.
+
+So through selectors you can look or you can filter the resources based on labels.
+
+---
+
+# Selectors in AWS Perspective
+
+So again, let's quickly understand this with the terminology because here we are working with UI, so it becomes much more easier.
+
+So let's take a first example where we were discussing show me all the objects, where the label is production.
+
+So in AWS you can easily do that with the filter here.
+
+So you can consider this filter as a selector.
+
+So let's do one thing.
+
+Let's go a bit up here and within the tag keys here you have a key of env.
+
+So I'll click on Env and I'll say production.
+
+So now what will happen is it will only show you all the resources which belongs to the production environment or in short all the resources which has a tag where env is production.
+
+So this is one way.
+
+Now you can also modify it to show you all the resource which belongs to dev environment.
+
+So again, it will show you only one resource which belongs to the dev environment.
+
+So this is what selectors are now through selectors irrespective of how many instance you have.
+
+So in current environment we have three instances.
+
+However, in production there can be hundreds or even thousands of instances.
+
+So through the selector you will be able to select or you will be able to view the right resources based on the labels which are associated with them.
+
+---
+
+# Kubernetes Objects and Labels
+
+Now, from the Kubernetes perspective, there can be multiple objects which can be part of a Kubernetes cluster.
+
+Now some of the objects are pods.
+
+You have services, secrets, namespaces, you have deployments, and so many of them.
+
+So now what you can do is you can attach a label to the objects, which are part of the Kubernetes cluster.
+
+Now, in the example, we had attached a label or a tag associated with the EC2 instance.
+
+Now you can even attach a label to a load balancer, a RDS instance and so on.
+
+Similar to that, even in Kubernetes you have various objects like pods, services, secrets, and you can attach labels to all of these objects.
+
+---
+
+# Kubernetes Selector Example
+
+So let's understand the selector part again.
+
+So in Kubernetes perspective, as we were discussing, there can be multiple objects.
+
+So in this diagram we have a total of six pods which are currently running now by the name of this pod.
+
+As we were discussing, it is difficult to identify what this pod does, whether it belongs to dev environment, whether it belongs to prod environment and so on.
+
+So the next thing that you do is you assign a label to your Kubernetes object.
+
+So to every pod here you assign a label where the envy is the key and dev or prod is the associated value.
+
+So from the label now you can easily identify that the first pod belongs to dev, the second pod belongs to prod and so on.
+
+So coming back to the selector, let's say that you want to have a selector where you want to list all the pods from dev environment.
+
+So in order to have this use case you will have to make use of selector.
+
+So what you do, you write a selector.
+
+So what selector will do?
+
+Selector will remove all the pods which does not have envy is equal to dev.
+
+So now you will only be able to see the pods which has this specific environment of dev.
+
+Now, in a similar way, let's say now you want to list all the pods from the production environment.
+
+So now what selector will do?
+
+Selector will look into the labels which are associated with the objects and all the objects which do not have the environment of prod.
+
+Will be removed from the list.
+
+So if you see now select, I will go ahead and remove all the objects which has the envy of dev or others which are not prod.
+
+So that's what selectors are.
+
+---
+
+# Kubernetes Demo
+
+So I hope you understood at a high level overview about the labels and selectors.
+
+Now before we conclude, let me give you a demo for Kubernetes so that this concept can be understood in a better way.
+
+So let's do one thing.
+
+Let's do a kubectl get pods here.
+
+Now you see that there are two pods which are running now, these two pods from the name itself.
+
+It becomes difficult to understand which of these pods belongs to dev or which of these pods belongs to production.
+
+So now what you can do, you can filter it out.
+
+So let's say kubectl get pods and I'll specify by label where n is equal to dev.
+
+And now you see it will only show you the pod which belongs to the development environment, or in short, the pod, which has a label where the key is env and the value is death.
+
+In a similar way you can even do env is equal to prod.
+
+And now you see you see one more pod which has the environment is equal to production.
+
+So in this way you can select the appropriate pods depending upon the use cases.
+
+So let's do one thing, let's do a cube, Ctl describe Pod and before that let's do a cube.
+
+Ctl get pods yet again and let's do a cube.
+
+Ctl Describe Pod and I'll specify the name of one of the pods here.
+
+Now, within the details which have been presented, if you look here, one of the details here is the label.
+
+Now one of the label here is env is equal to dev.
+
+So this is the label which is associated with this pod.
+
+This is very similar here where you have a pod and you have a label where N is equal to dev.
+
+So that is what labels are.
+
+And through selectors you will be able to filter the Kubernetes objects depending on the labels which are associated with them.
+
+---
+
+# Real World Incident
+
+Now, attaching a label to your Kubernetes objects is very important.
+
+I'll show you one real world use case.
+
+So in one of the organizations where I had recently joined what they used to do, they never had any of the tags or any of the labels which are associated with the servers there.
+
+So it was very difficult to find which server belonged to which environment.
+
+And in one of the email thread, one of the developer requested the team member to go ahead and delete the development EC2 instance and what the team member did.
+
+He deleted the EC2 instance which belonged to the staging environment and all of the QA team came running at the DevOps team asking why did they delete the staging environment?
+
+And this was one of the reason, the reason why this mistake happened was because there was no label which was associated with the resources in AWS.
+
+And this is the reason why having labels is extremely important not only for the Kubernetes objects, but also for the non Kubernetes environments like AWS.
+
+So that's the high level overview about labels and selectors.
+
+I hope you understood the concepts of label and selectors with respect to Kubernetes objects.
+
+So with this, we'll conclude this video.
+
+I hope this video has been informative for you and I look forward to see you in the next video.
+
+---
+
+# Labels and Selectors Practical
+
+Hi, everyone, and welcome back.
+
+Now, in the earlier video we were discussing about the basics of labels and selectors and how selectors can be used to go ahead and search for the resources based on the labels that are attached to them.
+
+So today is going to be a practical video where we'll go ahead and look into how we can attach a set of labels to a specific Kubernetes objects.
+
+And we'll also be looking into how we can go ahead and use the selectors to filter out the objects here.
+
+So with this base set, let's go ahead and get started.
+
+---
+
+# Step 1 - Creating Pods
+
+Now, in today's video, we'll go ahead and create three parts.
+
+Let's quickly do a cube so it'll run, I call it as pod one and we'll set the image as engineers.
+
+Similarly, let's also go ahead and create pod number two.
+
+And we'll also create a pod number three.
+
+That's great.
+
+Now, if you do a cube, see tailgate pods over here.
+
+We should see that there are three pods running.
+
+---
+
+# Viewing Existing Labels
+
+Now, if you want to see what are the labels that are associated with pods, you can do a cube.
+
+It'll get pods.
+
+Come on with the option of show labels.
+
+Now, at this stage, you'll see that each pod has a label of run is equal to pod name.
+
+So you have run is equal to pod one, run is equal to pod two and run is equal to pod three.
+
+So based on this label, it is difficult to identify the functionality of a specific pod.
+
+So generally in production environment, it is recommended to give a label through which we can quickly identify what the pod is supposed to do, or at least in which environment the pod is running.
+
+---
+
+# Adding Labels to Pods
+
+So now what you can do in order to label a pod, you can do a cube, a label command, we'll add a pod.
+
+And what is the name of the pod that we want to label?
+
+I'll say we want to label pod name Pod one.
+
+And what is the label we want to attach?
+
+I'll say environment is equal to death.
+
+So the pod one is label.
+
+Similarly for port two, I'll say environment is equal to stage.
+
+And for the pod three, we'll say environment is equal to prod.
+
+Now if we do a cube, so it'll get pods on show labels.
+
+You see, we have the envy label attached to all of these pods.
+
+Great.
+
+So this is the first step where we go ahead and associate a label with a specific object.
+
+---
+
+# Using Selectors
+
+Now, the second important part is to make use of selectors, to go ahead and search for the objects based on a specific label.
+
+So let's quickly use a selector.
+
+So I'll do a cube, so it'll get pods.
+
+Now, by default, if we run this command, it will go ahead and show all the pods.
+
+This is something that we do not want, what we want.
+
+We want to look for pods that are based on an environment of dev.
+
+So we'll add a selector.
+
+So I'll say hyphen L followed by the label say envy is equal to dev.
+
+So this time you see it only showed us the pod one over here.
+
+Similarly, if I say env is equal to prod this time it has shown as the pod number three.
+
+So this is what the selectors allows us to do.
+
+Along with that you can also do various interesting things.
+
+Let me quickly show you.
+
+So you can also say envy, not equal to dev.
+
+So now what this will do all the ports that does not have this specific envy of dev, it will go ahead and list it.
+
+So if I press enter, we should see in total of two pods over here.
+
+---
+
+# Removing Labels
+
+Now let's clear the screen.
+
+Now, if you do a cube CTA label, hyphen, hyphen help, you will basically get the examples related to various functionality.
+
+For example, we have already seen on how we can add a new label using the cube Ctrl label port command followed by the name of the port, followed by the key value pair that will be added as part of the label.
+
+Along with that, let's say if you want to remove the label, then you can say Cube Ctrl label ports followed by the name of the port, followed by the name of the key, which is Bar Area.
+
+Now let me quickly show you.
+
+So let's quickly do a cube.
+
+So it'll get ports which show labels.
+
+Alright, so let's go ahead and remove this dev label that is associated with Pod one.
+
+So I'll take you to a label port followed by the name of the port, followed by the label key, which is EMV.
+
+And I'll specify a hyphen over here.
+
+All right.
+
+Now, if you'll quickly do a show labels, you'll see a label associated with EMV of death is now removed from Port One.
+
+---
+
+# Labels in YAML Files
+
+Now, along with this sense in production environments, we will be using the YAML based file, will not be extensively using the cube.
+
+It'll run command to create the ports.
+
+So it is also important for us to know in Yemen where exactly a label can be attached.
+
+So when you do a cube, it'll run engine x followed by the image of engine x will quickly do a dry run is equal to client with the output of yaml.
+
+This is something that we have already seen earlier.
+
+Now if you'll see there is a label of run is equal to engine x.
+
+So this label is part of the metadata.
+
+Always remember this that whenever you want to create a label for a port through YAML, the label goes inside the metadata field along with the name of the port.
+
+Now you can also associate multiple labels in case if you want to.
+
+In fact, let's quickly look into it.
+
+We'll run the same command and we'll store it to label hyphen port YAML and within the file you have the labels that is attached.
+
+Along with that, let's say you want to add one more label again, let's say N and we'll say def.
+
+We'll save the change from the ClA.
+
+Let's do a cube so it'll apply on the label hyphen port yaml.
+
+So the port is created.
+
+Let's quickly do a cubes.
+
+It'll get ports which show labels.
+
+We should see that we have an engine export and this engine export has two labels that are associated with it.
+
+---
+
+# Labeling All Pods
+
+Now along with that, you can also do a few interesting things.
+
+Let's quickly look into it.
+
+In fact, you can do a cube, ctrl label, hyphen, hyphen health.
+
+And within here one of the interesting things that you can do is you can also update all the ports in a specific namespace.
+
+So the overall command is very simple cube, ctrl, label ports, you specify hyphen, hyphen, all, and then you specify the name of the label that you want to associate with.
+
+Let's quickly try it out.
+
+So let's first quickly do Cube.
+
+It'll show labels.
+
+So this is our initial reference.
+
+Now let's do a cube.
+
+So it'll label ports, hyphen, hyphen, all, and let's say status is equal to running.
+
+All right, so all the four ports have been labeled here.
+
+If you do a cube, it'll get ports once more.
+
+You will see all of these ports have a status of running over here.
+
+Great.
+
+So I hope with this you understood the basics of labels and selectors.
+
+---
+
+# Important Notes
+
+Now do note that in Kubernetes you will extensively be using labels and selectors.
+
+So it is very important that you understand these concepts quite thoroughly.
+
+Now, generally in Kubernetes will be using labels and selectors quite extensively in terms of YAML file.
+
+So whenever we create replica set deployments, that is where the labels and selectors are used very extensively.
+
+---
+
+# Cleanup
+
+Grid And one last thing before we conclude the video, you can go ahead and delete all the ports that we have created with Cube, Ctrl, delete, ports, hyphen, hyphen, all.
+
+So this way we'll have a clean environment for next video.
+
