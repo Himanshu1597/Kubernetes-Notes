@@ -1,0 +1,14 @@
+First Alt has 4 main applications:
+    1. Driver App (supports both iOS & Android) - Mainly used by Drivers who are serving trips for the students
+
+    2. Transportation Partner Portal - 
+
+    3. District View
+
+    4. Data Guardian Portal
+
+For all the Web Applications starting point is Route53 ----> CloudFront ----> S3.
+
+In First Alt they are having static web applications for the web app. They are not hosting any dynamic pages.
+
+
